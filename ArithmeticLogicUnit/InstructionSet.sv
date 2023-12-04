@@ -34,18 +34,17 @@ package InstructionSetPkg;
 		LIU   = 4'd9,  // $ %
 		ADC   = 4'd10, // $ % dest = src+dest+c : CZNVP
 		SUB   = 4'd11, // $ % dest = dest - (src+c) : CZNVP
-		DIV   = 4'd12, // $  dest = signed (dest/src) : ZNP
-		MOD   = 4'd13, // $  dest = dest % src : ZNP
-		MUL   = 4'd14, // $  dest = lower  half of signed(dest*src) : ZNP
-		MUH   = 4'd15  // $  dest = higher half of signed(dest*src) : ZNP
+		DIV   = 4'd12, // $ % dest = signed (dest/src) : ZNP
+		MOD   = 4'd13, // $ % dest = dest % src : ZNP
+		MUL   = 4'd14, // $ & dest = lower  half of signed(dest*src) : ZNP
+		MUH   = 4'd15  // $ & dest = higher half of signed(dest*src) : ZNP
 	} eOperation;
 
-	// C : Carry
-	// Z : Zero
-	// N : Negative
-	// P : Parity : even number of ones
-	// V : Overflow
-
+	// V : Overflow : 16
+	// P : Parity : 8
+	// N : Negative : 4
+	// Z : Zero : 2
+	// C : Carry : 1
 	// NC: No Carry : Rotate
 	// NZ: Not Zero : ALL ALU OPERATIONS
 	// A : Always : 1

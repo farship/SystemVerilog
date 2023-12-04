@@ -112,7 +112,7 @@ module ArithmeticLogicUnit
 				end
 			MOD:
 				begin
-					OutDest = InDest % InSrc;
+					OutDest = $signed(InDest % InSrc);
 					OutFlags.Zero = (OutDest == 0); // Z
 					// OutFlags.NotZero = (OutDest != 0); // NZ
 					OutFlags.Negative = OutDest[DataWidth-1]; // N
@@ -121,18 +121,18 @@ module ArithmeticLogicUnit
 				end
 			MUL:
 				begin
-					OutDest = $signed(InDest*InSrc);
-					OutDest = OutDest[(DataWidth/2)-1:0];
-					OutFlags.Zero = (OutDest == 0); // Z
+					OutDest = ($signed(InDest*InSrc));
+					OutDest = OutDest[DataWidth-1:0];
 					// OutFlags.NotZero = (OutDest != 0); // NZ
 					OutFlags.Negative = OutDest[DataWidth-1]; // N
 					OutFlags.Parity = ~(^OutDest);
 					// OutFlags.Always = 1;
+					OutFlags.Zero = (OutDest == 0); // Z
 				end
-			MUH:
+			MUH: // NO OUTPUT FOR FLAGS OR OUTDEST AS UNDEFINED
 				begin
 					OutDest = $signed(InDest*InSrc);
-					OutDest = OutDest[DataWidth-1:(DataWidth/2)];
+					OutDest = OutDest[(2*DataWidth)-1:DataWidth];
 					OutFlags.Zero = (OutDest == 0); // Z
 					// OutFlags.NotZero = (OutDest != 0); // NZ
 					OutFlags.Negative = OutDest[DataWidth-1]; // N
