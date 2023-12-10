@@ -32,6 +32,7 @@ module ArithmeticLogicUnit
 	// into the destination register at the end of the operation.
 	output logic signed [DataWidth-1:0] OutDest
 );
+	
 
 	// This block allows each OpCode to be defined. Any opcode not
 	// defined outputs a zero. The names of the operation are defined 
@@ -41,18 +42,28 @@ module ArithmeticLogicUnit
 	
 		// By default the flags are unchanged. Individual operations
 		// can override this to change any relevant flags.
-		OutFlags  = InFlags;
+		OutFlags  = InFlags; // indicates when ALU is read to accept new inputs as Always flag can be unset
 		
 		// The basic implementation of the ALU only has the NAND and
 		// ROL operations as examples of how to set ALU outputs 
 		// based on the operation and the register / flag inputs.
 		case(Operation)		
 		
-			ROL:     {OutFlags.Carry,OutDest} = {InSrc,InFlags.Carry};	
+			ROL:    begin
+						{OutFlags.Carry,OutDest} = {InSrc,InFlags.Carry};	
+						OutFlags.NoCarry = ~OutFlags.Carry; // NC // even though this isn't marked, the code will be consistant
+						OutFlags.Always = 1; // A
+					end
 			
-			NAND:    OutDest = ~(InSrc & InDest);
+			NAND:   begin
+						OutDest = ~(InSrc & InDest);
+						OutFlags.Always = 1; // A
+					end
 
-			LIL:	 OutDest = $signed(InImm);
+			LIL:	begin
+						OutDest = $signed(InImm);
+						OutFlags.Always = 1; // A
+					end
 
 			LIU:
 				begin
@@ -62,83 +73,97 @@ module ArithmeticLogicUnit
 						OutDest = $signed({InImm[ImmediateWidth - 2:0], InDest[ImmediateMidStart - 1:0]});
 					else
 						OutDest = InDest;	
+					OutFlags.Always = 1; // A
 				end
 
 
 			// ***** ONLY CHANGES BELOW THIS LINE ARE ASSESSED *****
 			// Put your instruction implementations here.
-			NOR:	OutDest = ~(InSrc | InDest);
 
-			ROR:	{OutDest,OutFlags.Carry} = {InFlags.Carry,InSrc};
+			NOR:	begin
+						OutDest = ~(InSrc | InDest);
+						OutFlags.Always = 1; // A
+					end
 
-			MOVE:	OutDest = InSrc;
+			ROR:	begin
+						{OutDest,OutFlags.Carry} = {InFlags.Carry,InSrc};
+						OutFlags.NoCarry = ~OutFlags.Carry; // NC
+						OutFlags.Always = 1; // A
+					end
 
+			MOVE:	begin
+						OutDest = InSrc;
+						OutFlags.Always = 1; // A
+					end
+					
 			ADC:
 				begin	
 					{OutFlags.Carry,OutDest} = InSrc + InDest + InFlags.Carry;
 					if (OutDest == 0) OutFlags.Zero = 1;
 					else OutFlags.Zero = 0;
-					// OutFlags.NotZero = (OutDest != 0); // NZ
+					OutFlags.NotZero = ~OutFlags.Zero; // NZ
 					if (OutDest[DataWidth-1]) OutFlags.Negative = 1; // have to check if the input is signed?
 					else OutFlags.Negative = 0;
 					OutFlags.Overflow = (InDest[DataWidth-1] == InSrc[DataWidth-1]) & (OutDest[DataWidth-1] != InDest[DataWidth-1]); // OVERFLOW
-					OutFlags.Parity = ~(^OutDest); // need to have a ~ bitwise XOR of the output 
-					// OutFlags.Always = 1;
+					OutFlags.Parity = ~(^OutDest); // P // need to have a ~ bitwise XOR of the output 
+					OutFlags.Always = 1; // A
+					OutFlags.NoCarry = ~OutFlags.Carry; // NC
 				end
 			
 			SUB:
 				begin
 					{OutFlags.Carry,OutDest} = InDest - (InSrc + InFlags.Carry); // ANS & C
-					// if (OutDest == 0) OutFlags.Zero = 1; // Z
-					// else OutFlags.Zero = 0;
 					OutFlags.Zero = (OutDest == 0); // Z
-					// OutFlags.NotZero = (OutDest != 0); // NZ
-					// if (OutDest[DataWidth-1]) OutFlags.Negative = 1;
-					// else OutFlags.Negative = 0;
+					OutFlags.NotZero = ~OutFlags.Zero; // NZ
 					OutFlags.Negative = OutDest[DataWidth-1]; // N
 					OutFlags.Overflow = (InDest[DataWidth-1] == InSrc[DataWidth-1]) & (OutDest[DataWidth-1] != InDest[DataWidth-1]); // OVERFLOW
-					OutFlags.Parity = ~(^OutDest);
-					// OutFlags.Always = 1;
+					OutFlags.Parity = ~(^OutDest); // P
+					OutFlags.Always = 1; // A
+					OutFlags.NoCarry = ~OutFlags.Carry; // NC
 				end
 			
 			DIV:
 				begin
 					OutDest = $signed(InDest / InSrc);
 					OutFlags.Zero = (OutDest == 0); // Z
-					// OutFlags.NotZero = (OutDest != 0); // NZ
+					OutFlags.NotZero = ~OutFlags.Zero; // NZ
 					OutFlags.Negative = OutDest[DataWidth-1]; // N
-					OutFlags.Parity = ~(^OutDest);
-					// OutFlags.Always = 1;
+					OutFlags.Parity = ~(^OutDest); // P
+					OutFlags.Always = 1; // A
 				end
 			MOD:
 				begin
 					OutDest = $signed(InDest % InSrc);
 					OutFlags.Zero = (OutDest == 0); // Z
-					// OutFlags.NotZero = (OutDest != 0); // NZ
+					OutFlags.NotZero = ~OutFlags.Zero; // NZ
 					OutFlags.Negative = OutDest[DataWidth-1]; // N
-					OutFlags.Parity = ~(^OutDest);
-					// OutFlags.Always = 1;
+					OutFlags.Parity = ~(^OutDest); // P
+					OutFlags.Always = 1; // A
 				end
 			MUL:
 				begin
 					OutDest = ($signed(InDest*InSrc));
-					OutDest = OutDest[DataWidth-1:0];
-					// OutFlags.NotZero = (OutDest != 0); // NZ
+					OutDest = OutDest[DataWidth-1:0]; // May be redundant, but don't want to risk issues in compilation in other software
+					OutFlags.NotZero = ~OutFlags.Zero; // NZ
 					OutFlags.Negative = OutDest[DataWidth-1]; // N
-					OutFlags.Parity = ~(^OutDest);
-					// OutFlags.Always = 1;
+					OutFlags.Parity = ~(^OutDest); // P
+					OutFlags.Always = 1; // A
 					OutFlags.Zero = (OutDest == 0); // Z
 				end
-			MUH: // NO OUTPUT FOR FLAGS OR OUTDEST AS UNDEFINED
+			MUH:
 				begin
-					OutDest = $signed(InDest*InSrc);
-					OutDest = OutDest[(2*DataWidth)-1:DataWidth];
+					logic signed [(DataWidth*2)-1:0] DWORDAnswer; // so it doesn't loose the high half, would put out of case, but then isn't marked
+					DWORDAnswer = (InDest*InSrc); // both inputs are signed, also causes sign extension wrong
+					OutDest = DWORDAnswer[(2*DataWidth)-1:DataWidth];
 					OutFlags.Zero = (OutDest == 0); // Z
-					// OutFlags.NotZero = (OutDest != 0); // NZ
+					OutFlags.NotZero = ~OutFlags.Zero; // NZ
 					OutFlags.Negative = OutDest[DataWidth-1]; // N
-					OutFlags.Parity = ~(^OutDest);
-					// OutFlags.Always = 1;
+					OutFlags.Parity = ~(^OutDest); // P
+					OutFlags.Always = 1; // A
 				end
+
+
+
 			// ***** ONLY CHANGES ABOVE THIS LINE ARE ASSESSED	*****		
 			
 			default:	OutDest = '0;

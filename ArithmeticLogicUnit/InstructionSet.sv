@@ -14,7 +14,7 @@ package InstructionSetPkg;
 	// FPGA. This is because the hardware doesn't have enough
 	// switches. For simulation, and the overall processor 
 	// configuration, set the value to 16.
-	parameter DataWidth       = 16;
+	parameter DataWidth       = 4;
 	
 	// An example of an enumerated type that defines the names
 	// for all of the instruction set opcodes.
@@ -25,41 +25,43 @@ package InstructionSetPkg;
 		JR    = 4'd0,  // not alu
 		LOAD  = 4'd1,  // not alu
 		STORE = 4'd2,  // not alu
-		MOVE  = 4'd3,  // $ -- cp src dest
+		MOVE  = 4'd3,  // $ cp src dest // not tested; given; flags have been added
 		NAND  = 4'd4,  // $ %
 		NOR   = 4'd5,  // $ %
 		ROL   = 4'd6,  // $ % : C NC
 		ROR   = 4'd7,  // $ %: C
-		LIL   = 4'd8,  // $ 
+		LIL   = 4'd8,  // $ // not tested as the instruction was provided, though flags have been added
 		LIU   = 4'd9,  // $ %
 		ADC   = 4'd10, // $ % dest = src+dest+c : CZNVP
 		SUB   = 4'd11, // $ % dest = dest - (src+c) : CZNVP
 		DIV   = 4'd12, // $ % dest = signed (dest/src) : ZNP
 		MOD   = 4'd13, // $ % dest = dest % src : ZNP
-		MUL   = 4'd14, // $ & dest = lower  half of signed(dest*src) : ZNP
-		MUH   = 4'd15  // $ & dest = higher half of signed(dest*src) : ZNP
+		MUL   = 4'd14, // $ % dest = lower  half of signed(dest*src) : ZNP
+		MUH   = 4'd15  // $ % dest = higher half of signed(dest*src) : ZNP
 	} eOperation;
 
+	// A : Always : 128
+	// NZ: Not Zero : 64
+	// NC: No Carry : 32
 	// V : Overflow : 16
 	// P : Parity : 8
 	// N : Negative : 4
 	// Z : Zero : 2
 	// C : Carry : 1
-	// NC: No Carry : Rotate
-	// NZ: Not Zero : ALL ALU OPERATIONS
-	// A : Always : 1
+
 
 	// An example of a structure used to combine the different
 	// flags together so they can be refered to as a group.
 	typedef struct packed
 	{
+		logic Always;
+		logic NotZero;
+		logic NoCarry;
 		logic Overflow;
 		logic Parity;
 		logic Negative;
 		logic Zero;
 		logic Carry;
-		// logic NotZero;
-		// logic Always;
 	} sFlags;
   
 	// This setup works well for dataWidth values of 4 and 16

@@ -21,7 +21,7 @@ module AluTb();
 	ArithmeticLogicUnit uut (.*);
 
 	initial
-	begin/*
+	begin
 		InFlags = sFlags'(0);
 		
 		
@@ -64,30 +64,30 @@ module AluTb();
 		InSrc = 16'hA5A5;   
 	   #1 
 		if (OutDest != 16'hA5A5) $display("Error in ADC operation at time %t",$time);
-	   if (OutFlags != sFlags'(12)) $display("Error (flags) in ADC operation at time %t",$time);
+	   if (OutFlags != sFlags'(236)) $display("Error (flags) in ADC operation at time %t",$time);
 		
 		#10 InFlags.Carry = '1;
 	   #1 
 		if (OutDest != 16'ha5a6) $display("Error in ADC operation at time %t",$time);
-	   if (OutFlags != sFlags'(12)) $display("Error (flags) in ADC operation at time %t",$time);
+	   if (OutFlags != sFlags'(236)) $display("Error (flags) in ADC operation at time %t",$time);
 
 		#10 InDest = 16'h5A5A; 
 	   #1 
 		if (OutDest != 16'h0000) $display("Error in ADC operation at time %t",$time);
-	   if (OutFlags != sFlags'(11)) $display("Error (flags) in ADC operation at time %t",$time);
+	   if (OutFlags != sFlags'(139)) $display("Error (flags) in ADC operation at time %t",$time);
 		
 		#10 InDest = 16'h8000;
 		InFlags.Carry = '0;
 		InSrc = 16'hffff;      
 	   #1 
 		if (OutDest != 16'h7fff) $display("Error in ADC operation at time %t",$time);
-	   if (OutFlags != sFlags'(17)) $display("Error (flags) in ADC operation at time %t",$time);
+	   if (OutFlags != sFlags'(209)) $display("Error (flags) in ADC operation at time %t",$time);
 		
 		#10 InDest = 16'h7fff;
 		InSrc = 16'h0001;     
 	   #1 
 		if (OutDest != 16'h8000) $display("Error in ADC operation at time %t",$time);
-	   if (OutFlags != sFlags'(20)) $display("Error (flags) in ADC operation at time %t",$time);
+	   if (OutFlags != sFlags'(244)) $display("Error (flags) in ADC operation at time %t",$time);
 		#50;
 
 		
@@ -195,29 +195,29 @@ module AluTb();
 		InSrc = 16'h0000;
 	   #1 
 		if (OutDest != 16'hA5A5) $display("Error in SUB operation at time %t",$time);
-	   if (OutFlags != sFlags'(12)) $display("Error (flags) in SUB operation at time %t",$time);
+	   if (OutFlags != sFlags'(236)) $display("Error (flags) in SUB operation at time %t",$time);
 		
 		#10 InFlags.Carry = '1;
 	   #1 
 		if (OutDest != 16'ha5a4) $display("Error in SUB operation at time %t",$time);
-	   if (OutFlags != sFlags'(4)) $display("Error (flags) in SUB operation at time %t",$time);
+	   if (OutFlags != sFlags'(228)) $display("Error (flags) in SUB operation at time %t",$time);
 
 		#10 InSrc = 16'hA5A5; 
 	   #1 
 		if (OutDest != 16'hFFFF) $display("Error in SUB operation at time %t",$time);
-	   if (OutFlags != sFlags'(13)) $display("Error (flags) in SUB operation at time %t",$time);
+	   if (OutFlags != sFlags'(205)) $display("Error (flags) in SUB operation at time %t",$time);
 		
 		#10 InFlags.Carry = '0;
 		InSrc = 16'hA5A5;      
 	   #1 
 		if (OutDest != 16'h0000) $display("Error in SUB operation at time %t",$time);
-	   if (OutFlags != sFlags'(26)) $display("Error (flags) in SUB operation at time %t",$time);
+	   if (OutFlags != sFlags'(186)) $display("Error (flags) in SUB operation at time %t",$time);
 		
 		#10 InDest = 16'h7fff;
 		InSrc = 16'h0f15;     
 	   #1 
 		if (OutDest != 16'h70EA) $display("Error in SUB operation at time %t",$time);
-	   if (OutFlags != sFlags'(8)) $display("Error (flags) in SUB operation at time %t",$time);
+	   if (OutFlags != sFlags'(232)) $display("Error (flags) in SUB operation at time %t",$time);
 		#50;
 
 
@@ -229,37 +229,37 @@ module AluTb();
 		InSrc = 16'd10;
 	   #1 ;
 		if (OutDest != 16'd10) $display("Error in DIV operation at time %t",$time);
-	   if (OutFlags != sFlags'(8)) $display("Error (flags) in DIV operation at time %t",$time);
+	   if (OutFlags != sFlags'(200)) $display("Error (flags) in DIV operation at time %t",$time);
 		
 		InDest = 16'd777;
 		InSrc = 16'd11;
 	   #1 ;
 		if (OutDest != 16'd70) $display("Error in DIV operation at time %t",$time);
-	   if (OutFlags != sFlags'(0)) $display("Error (flags) in DIV operation at time %t",$time);
+	   if (OutFlags != sFlags'(192)) $display("Error (flags) in DIV operation at time %t",$time);
 #1;
 		InDest = 16'hFBF8;
 		InSrc = 16'hFFA9;
 	   #1 ;
 		if (OutDest != 16'd11) $display("Error in DIV operation at time %t",$time);
-	   if (OutFlags != sFlags'(0)) $display("Error (flags) in DIV operation at time %t",$time);
+	   if (OutFlags != sFlags'(192)) $display("Error (flags) in DIV operation at time %t",$time);
 		#1;
 		InDest = 16'hFBF8;
 		InSrc = 16'h57;
 	   #1 ;
 		if (OutDest != 16'hFFF5) $display("Error in DIV operation at time %t",$time);
-	   if (OutFlags != sFlags'(12)) $display("Error (flags) in DIV operation at time %t",$time);
+	   if (OutFlags != sFlags'(204)) $display("Error (flags) in DIV operation at time %t",$time);
 		#1;
 		InDest = 16'd1032;
 		InSrc = 16'hFFA9;
 	   #1 ;
 		if (OutDest != 16'hFFF5) $display("Error in DIV operation at time %t",$time);
-	   if (OutFlags != sFlags'(12)) $display("Error (flags) in DIV operation at time %t",$time);
+	   if (OutFlags != sFlags'(204)) $display("Error (flags) in DIV operation at time %t",$time);
 #1;
 	   	InDest = 16'd10;
 		InSrc = 16'd100;
 	   #1 ;
 		if (OutDest != 16'h0) $display("Error in DIV operation at time %t",$time);
-	   if (OutFlags != sFlags'(10)) $display("Error (flags) in DIV operation at time %t",$time);
+	   if (OutFlags != sFlags'(138)) $display("Error (flags) in DIV operation at time %t",$time);
 		
 
 
@@ -270,37 +270,37 @@ module AluTb();
 		InSrc = 16'd10;
 	   #1 ;
 		if (OutDest != 16'd0) $display("Error in MOD operation at time %t",$time);
-	   if (OutFlags != sFlags'(10)) $display("Error (flags) in MOD operation at time %t",$time);
+	   if (OutFlags != sFlags'(138)) $display("Error (flags) in MOD operation at time %t",$time);
 		
 		InDest = 16'd777;
 		InSrc = 16'd11;
 	   #1 ;
 		if (OutDest != 16'd7) $display("Error in MOD operation at time %t",$time);
-	   if (OutFlags != sFlags'(0)) $display("Error (flags) in MOD operation at time %t",$time);
+	   if (OutFlags != sFlags'(192)) $display("Error (flags) in MOD operation at time %t",$time);
 #1;
 		InDest = 16'hFBF8;
 		InSrc = 16'hFFA9;
 	   #1 ;
 		if (OutDest != 16'hFFB5) $display("Error in MOD operation at time %t",$time);
-	   if (OutFlags != sFlags'(4)) $display("Error (flags) in MOD operation at time %t",$time);
+	   if (OutFlags != sFlags'(196)) $display("Error (flags) in MOD operation at time %t",$time);
 		#1;
 		InDest = 16'hFBF8;
 		InSrc = 16'h57;
 	   #1 ;
 		if (OutDest != 16'hFFB5) $display("Error in MOD operation at time %t",$time);
-	   if (OutFlags != sFlags'(4)) $display("Error (flags) in MOD operation at time %t",$time);
+	   if (OutFlags != sFlags'(196)) $display("Error (flags) in MOD operation at time %t",$time);
 		#1;
 		InDest = 16'd1032;
 		InSrc = 16'hFFA9;
 	   #1 ;
 		if (OutDest != 16'h4b) $display("Error in MOD operation at time %t",$time);
-	   if (OutFlags != sFlags'(8)) $display("Error (flags) in MOD operation at time %t",$time);
+	   if (OutFlags != sFlags'(200)) $display("Error (flags) in MOD operation at time %t",$time);
 #1;
 	   	InDest = 16'd10;
 		InSrc = 16'd100;
 	   #1 ;
 		if (OutDest != 16'ha) $display("Error in MOD operation at time %t",$time);
-	   if (OutFlags != sFlags'(8)) $display("Error (flags) in MOD operation at time %t",$time);
+	   if (OutFlags != sFlags'(200)) $display("Error (flags) in MOD operation at time %t",$time);
 
 
 		#10;
@@ -314,32 +314,32 @@ module AluTb();
 		InSrc = 16'ha;
 	   #2 ;
 		if (OutDest != 16'h3E8) $display("Error in MUL operation at time %t",$time);
-	    if (OutFlags != sFlags'(8)) $display("Error (flags) in MUL operation at time %t",$time);
+	    if (OutFlags != sFlags'(200)) $display("Error (flags) in MUL operation at time %t",$time);
 		InDest = 16'h7;
 		InSrc = 16'hb;
 	   #2 ;
 		if (OutDest != 16'h4D) $display("Error in MUL operation at time %t",$time);
-	    if (OutFlags != sFlags'(8)) $display("Error (flags) in MUL operation at time %t",$time);
+	    if (OutFlags != sFlags'(200)) $display("Error (flags) in MUL operation at time %t",$time);
 	   #2;
 		InDest = 16'h0;
 		InSrc = 16'hFFA9;
 	   #2 ;
 		if (OutDest != 16'h0) $display("Error in MUL operation at time %t",$time);
-	    if (OutFlags != sFlags'(10)) $display("Error (flags) in MUL operation at time %t",$time);
+	    if (OutFlags != sFlags'(202)) $display("Error (flags) in MUL operation at time %t",$time);
 	   #2;
 		InDest = 16'h89;
 		InSrc = 16'hFFA9;
 	   #2 ;
 		if (OutDest != 16'hD171) $display("Error in MUL operation at time %t",$time);
-	    if (OutFlags != sFlags'(12)) $display("Error (flags) in MUL operation at time %t",$time);
+	    if (OutFlags != sFlags'(204)) $display("Error (flags) in MUL operation at time %t",$time);
 	   #2;
 		InDest = 16'h5FFC;
 		InSrc = 16'h7FFF;
 	   #2 ;
 		if (OutDest != 16'hA004) $display("Error in MUL operation at time %t",$time);
-	    if (OutFlags != sFlags'(4)) $display("Error (flags) in MUL operation at time %t",$time);
+	    if (OutFlags != sFlags'(196)) $display("Error (flags) in MUL operation at time %t",$time);
 	   #10;
-*/
+
 
 		$display("Start of MUH tests");
 		Operation = MUH;
@@ -349,35 +349,35 @@ module AluTb();
 		InSrc = 16'ha;
 	   #2 ;
 		if (OutDest != 16'h0) $display("Error in MUH operation at time %t",$time);
-	    if (OutFlags != sFlags'(10)) $display("Error (flags) in MUH operation at time %t",$time);
+	    if (OutFlags != sFlags'(138)) $display("Error (flags) in MUH operation at time %t",$time);
 		InDest = 16'h5FF7;
 		InSrc = 16'hb;
 	   #2 ;
 		if (OutDest != 16'h4) $display("Error in MUH operation at time %t",$time);
-	    if (OutFlags != sFlags'(0)) $display("Error (flags) in MUH operation at time %t",$time);
+	    if (OutFlags != sFlags'(192)) $display("Error (flags) in MUH operation at time %t",$time);
 	   #2;
 		InDest = 16'h0;
 		InSrc = 16'hFFA9;
 	   #2 ;
 		if (OutDest != 16'h0) $display("Error in MUH operation at time %t",$time);
-	    if (OutFlags != sFlags'(10)) $display("Error (flags) in MUH operation at time %t",$time);
+	    if (OutFlags != sFlags'(138)) $display("Error (flags) in MUH operation at time %t",$time);
 	   #2;
 		InDest = 16'h89;
 		InSrc = 16'hFFA9;
 	   #2 ;
-		if (OutDest != 16'h88) $display("Error in MUH operation at time %t",$time);
-	    if (OutFlags != sFlags'(8)) $display("Error (flags) in MUH operation at time %t",$time);
+		if (OutDest != 16'hFFFF) $display("Error in MUH operation at time %t",$time);
+	    if (OutFlags != sFlags'(204)) $display("Error (flags) in MUH operation at time %t",$time);
 	   #2;
 		InDest = 16'h5FFC;
 		InSrc = 16'h7FFF;
 	   #2 ;
 		if (OutDest != 16'h2FFD) $display("Error in MUH operation at time %t",$time);
-	    if (OutFlags != sFlags'(8)) $display("Error (flags) in MUH operation at time %t",$time);
+	    if (OutFlags != sFlags'(200)) $display("Error (flags) in MUH operation at time %t",$time);
 		InDest = 16'hFFFF;
 		InSrc = 16'hFFFF;
 	   #2 ;
-		if (OutDest != 16'hFFFE) $display("Error in MUH operation at time %t",$time);
-	    if (OutFlags != sFlags'(4)) $display("Error (flags) in MUH operation at time %t",$time);
+		if (OutDest != 16'h0) $display("Error in MUH operation at time %t",$time);
+	    if (OutFlags != sFlags'(138)) $display("Error (flags) in MUH operation at time %t",$time);
 	   #10;
 
 
